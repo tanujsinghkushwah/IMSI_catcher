@@ -152,6 +152,8 @@ class tracker:
 		temp["cell"] = cell
 		userDetails[cpt] = temp
 		print((u"{:7s} ; {:10s} ; {:10s} ; {:17s} ; {:12s} ; {:10s} ; {:21s} ; {:4s} ; {:5s} ; {:6s} ; {:6s}".format(str(cpt), tmsi1, tmsi2, imsi, imsicountry, imsibrand, imsioperator, str(mcc), str(mnc), str(lac), str(cell))).encode("utf-8"))
+		with open("imsiDetails.json", 'w+') as f :
+		      json.dump(userDetails, f)
 
 
 	def pfields(self, cpt, tmsi1, tmsi2, imsi, mcc, mnc, lac, cell, packet=None):
@@ -544,5 +546,3 @@ if __name__ == "__main__":
 	else:
 		imsitracker.header()
 		udpserver(port=options.port, prn=find_imsi)
-	with open("imsiDetails.json", 'w+') as f :
-		      json.dump(userDetails, f)
