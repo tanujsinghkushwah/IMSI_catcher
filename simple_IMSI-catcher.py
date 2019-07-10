@@ -18,8 +18,10 @@ from optparse import OptionParser
 import datetime
 import io
 import socket
+import json
 
 imsitracker = None
+userDetails = {}
 
 class tracker:
 	imsistate = {}
@@ -142,7 +144,15 @@ class tracker:
 		self.sqlcon.execute("CREATE TABLE IF NOT EXISTS observations(stamp datetime, tmsi1 text, tmsi2 text, imsi text, imsicountry text, imsibrand text, imsioperator text, mcc integer, mnc integer, lac integer, cell integer);")
 
 	def ouput(self, cpt, tmsi1, tmsi2, imsi, imsicountry, imsibrand, imsioperator, mcc, mnc, lac, cell, packet=None):
+                temp = {}
+                temp["imsi"] = imsi
+		temp["mcc"] = mcc
+		temp["mnc"] = mnc
+		temp["lac"] = lac
+		temp["cell"] = cell
+		userDetails[cpt] = temp
 		print((u"{:7s} ; {:10s} ; {:10s} ; {:17s} ; {:12s} ; {:10s} ; {:21s} ; {:4s} ; {:5s} ; {:6s} ; {:6s}".format(str(cpt), tmsi1, tmsi2, imsi, imsicountry, imsibrand, imsioperator, str(mcc), str(mnc), str(lac), str(cell))).encode("utf-8"))
+
 
 	def pfields(self, cpt, tmsi1, tmsi2, imsi, mcc, mnc, lac, cell, packet=None):
 		imsicountry=""
@@ -534,3 +544,5 @@ if __name__ == "__main__":
 	else:
 		imsitracker.header()
 		udpserver(port=options.port, prn=find_imsi)
+	with open("imsiDetails.json", 'w+') as f :
+		      json.dump(userDetails, f)
